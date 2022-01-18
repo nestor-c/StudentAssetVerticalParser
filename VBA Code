@@ -1,0 +1,36 @@
+Sub SplitPagesToSheets()
+    Dim FirstRow As Range
+    Set FirstRow = ActiveSheet.Range("A1")
+    Set PageBreaks = ActiveSheet.HPageBreaks
+    Dim PageWorkArea As Range
+    Dim iterator As Integer
+    iterator = 1
+    
+    For Each pb In PageBreaks
+        Set TopLeft = TopLeftCell(FirstRow, pb.Location)
+        Set BottomRight = BottomRightCell(pb.Location.Address)
+        PageWorkArea = Range(TopLeft, BottomRight)
+        PageWorkArea.Copy _
+            Destination:=Worksheets("Sheet" & iterator).Range("A1").Value
+        iterator = iterator + 1
+    Next
+    
+End Sub
+
+Function TopLeftCell(FirstRow As Range, pb As Range) As Range
+    Dim FirstColumn As Integer
+    FirstColumn = 1
+    If FirstRow.Address <> "$A$1" Then
+        FirstRow = pb.Location.Row
+    End If
+    TopLeftCell = Cells(FirstRow, FirstColumn)
+End Function
+
+Function BottomRightCell(pagebreak As Range) As Range
+    Dim LastColumn As Integer
+    Dim LastRow As Range
+    LastColumn = ActiveSheet.UsedRange.Columns.Count
+    LastRow = pagebreak.Offset(rowOffset:=-1).Row
+    
+    BottomRightCell = Cells(LastRow, LastColumn)
+End Function
