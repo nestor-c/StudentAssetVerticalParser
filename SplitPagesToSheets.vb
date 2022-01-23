@@ -1,22 +1,21 @@
 Sub SplitPagesToSheets()
     Dim FirstRow As Range
-    Dim TopLeft As Range
-    Dim BottomRight As Range
+    Dim PageBreaks As HPageBreaks
     Dim pb As HPageBreak
-    Set FirstRow = ActiveSheet.Range("A1").Location
-    Set PageBreaks = ActiveSheet.HPageBreaks
+    Dim BottomRight As Range
+    Dim TopLeft As Range
     Dim PageWorkArea As Range
+    Set TopLeft = Range("A1")
+    Set PageBreaks = ActiveSheet.HPageBreaks
 
     For Each pb In PageBreaks
-        Set TopLeft = TopLeftCell(pb)
-        Set BottomRight = BottomRightCell(pb)
-        Set PageWorkArea = Range(TopLeft, BottomRight)
-        If FirstRow = Range("A1") Then
-            CopyDataToNewSheet (FirstRow)
-        Else
-            CopyDataToNewSheet (PageWorkArea)
-        End If
+            Set BottomRight = BottomRightCell(pb)
+            Set PageWorkArea = Sheets(1).Range(TopLeft, BottomRight)
+            Set TopLeft = TopLeftCell(pb)
+            CopyDataToNewSheet PageWorkArea
+            Sheets(1).Activate
     Next
+            CopyDataToNewSheet Range(TopLeft, Sheets(1).UsedRange.SpecialCells(xlCellTypeLastCell))
 End Sub
 
 Function TopLeftCell(pb As HPageBreak) As Range
@@ -25,11 +24,11 @@ Function TopLeftCell(pb As HPageBreak) As Range
     Set TopLeftCell = Cells(pb.Location.Row, FirstColumn)
 End Function
 
-Function BottomRightCell(pb As HPageBreak) As Range
+Function BottomRightCell(pageBreak As HPageBreak) As Range
     Dim LastColumn As Integer
     Dim LastRow As Range
     LastColumn = ActiveSheet.UsedRange.Columns.Count
-    Set LastRow = pb.Location.Offset(rowOffset:=-1)
+    Set LastRow = pageBreak.Location.Offset(rowOffset:=-1)
     Set BottomRightCell = Cells(LastRow.Row, LastColumn)
 End Function
 
