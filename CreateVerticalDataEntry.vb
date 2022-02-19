@@ -1,24 +1,41 @@
 Sub selectStudentData()
     Dim UsedRange As Range
+    Dim NewRow As Range
+    Dim test As Variant
     Set UsedRange = ActiveSheet.UsedRange
-    Set UsedRange = UsedRange.Resize(rowSize:=UsedRange.Rows.count - 2)
+    Set UsedRange = UsedRange.Resize(rowSize:=UsedRange.Rows.Count - 2)
     Set UsedRange = UsedRange.Offset(rowoffset:=2)
+    Set NewRow = Cells(ActiveSheet.UsedRange.Rows.Count + 1, 1)
+    Set NewRow = NewRow.Resize(ColumnSize:=returnVariantSize(createEntry(UsedRange)))
+    NewRow = createEntry(UsedRange)
+    
 End Sub
 
-Function createEntry(source As Range) As Range
-    Dim Entry As Range
-    Dim Name As String
-    Dim StudentID As String
-    Dim Grade As String
-    Dim Birthdate As String
+Function returnVariantSize(source As Variant) As Integer
+    Dim i As Integer
+    Dim ele As Variant
+    i = 0
+    For Each ele In source
+        i = i + 1
+    Next
+    returnVariantSize = i
+End Function
+Private Function createEntry(source As Range) As Variant
+    Dim entryArr As Variant
+    Dim tempArr(1 To 4) As String
     
+    ReDim entryArr(1 To 4)
     
-    Set Name = GrabName(source)
-    Set StudentID = GrabID(source)
-    Set Grade = GrabGrade(source)
-    Set Birthdate = GrabBirthdate(source)
-    Set Entry = Array(Name, StudentID, Grade, Birthdate)
+    tempArr(1) = GrabName(source)
+    tempArr(2) = GrabID(source)
+    tempArr(3) = GrabGrade(source)
+    tempArr(4) = GrabBirthdate(source)
     
+    For i = 1 To 4 Step 1
+        entryArr(i) = tempArr(i)
+    Next i
+    
+    createEntry = entryArr
 End Function
 
 Private Function GrabName(source As Range) As String
@@ -48,7 +65,7 @@ Private Function GrabIssueDate(source As Range) As Variant
     Set IssueDates = IssueDates.SpecialCells(xlCellTypeConstants)
 '---Create contigous Range with IssueDates---
     Dim rangeEle As Range
-    ReDim dateArr(1 To IssueDates.count)
+    ReDim dateArr(1 To IssueDates.Count)
     Dim i As Integer
     i = 0
     For Each rangeEle In IssueDates
@@ -67,7 +84,7 @@ Function GrabAssets(source As Range) As Variant
     Set assetColumn = source.Columns(1)
     Set assetColumn = assetColumn.Offset(rowoffset:=2)
     Set assetColumn = assetColumn.SpecialCells(xlCellTypeConstants)
-    ReDim assetArr(1 To assetColumn.count)
+    ReDim assetArr(1 To assetColumn.Count)
     i = 0
     For Each assetEle In assetColumn
         i = i + 1
@@ -85,7 +102,7 @@ Function GrabBarcodes(source As Range) As Variant
     Set assetColumn = source.Columns(1)
     Set assetColumn = assetColumn.Offset(rowoffset:=2)
     Set assetColumn = assetColumn.SpecialCells(xlCellTypeConstants)
-    ReDim assetArr(1 To assetColumn.count)
+    ReDim assetArr(1 To assetColumn.Count)
     i = 0
     For Each assetEle In assetColumn
         i = i + 1
@@ -93,5 +110,8 @@ Function GrabBarcodes(source As Range) As Variant
     Next
     GrabAssets = assetArr
 End Function
+
+
+
 
 
