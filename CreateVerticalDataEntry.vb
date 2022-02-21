@@ -1,15 +1,43 @@
-Sub selectStudentData()
+Sub addStudentData()
+    Dim workingData As Range
+    Dim newEntry As Variant
+    Dim assetSize As Integer
+    Dim assets As Variant
+    Dim nextRow As Range
+    ' Select student data
+    Set workingData = selectStudentData()
+    ' Create new entry based on data
+    newEntry = createEntry(workingData)
+    'Get the next available row and resize to length appropriate for data
+    Set nextRow = newRow(newEntry, Worksheets("VerticalStudentData"))
+    assets = GrabAssets(workingData)
+    assetSize = returnVariantSize(assets)
+
+    For counter = 1 To assetSize
+        nextRow = newRow(newEntry, Worksheets("VerticalStudentData"))
+        nextRow = newEntry
+        Cells(nextRow.Row, nextRow.Columns.Count + 1) = assets(counter)
+    Next
+End Sub
+'
+'
+
+
+Function selectStudentData() As Range
     Dim UsedRange As Range
-    Dim NewRow As Range
+    Dim newRow As Range
     Dim test As Variant
     Set UsedRange = ActiveSheet.UsedRange
-    Set UsedRange = UsedRange.Resize(rowSize:=UsedRange.Rows.Count - 2)
-    Set UsedRange = UsedRange.Offset(rowoffset:=2)
-    Set NewRow = Cells(ActiveSheet.UsedRange.Rows.Count + 1, 1)
-    Set NewRow = NewRow.Resize(ColumnSize:=returnVariantSize(createEntry(UsedRange)))
-    NewRow = createEntry(UsedRange)
-    
-End Sub
+    Set UsedRange = UsedRange.Resize(rowSize:=UsedRange.Rows.Count - 2) _
+                    .Offset(rowoffset:=2)
+    Set selectStudentData = UsedRange
+End Function
+
+Function newRow(entry As Variant, entrySheet As Worksheet) As Range
+  Set newRow = Cells(entrySheet.UsedRange.Rows.Count + 1, 1) _
+        .Resize(ColumnSize:=returnVariantSize(entry))
+
+End Function
 
 Function returnVariantSize(source As Variant) As Integer
     Dim i As Integer
@@ -20,21 +48,22 @@ Function returnVariantSize(source As Variant) As Integer
     Next
     returnVariantSize = i
 End Function
+
 Private Function createEntry(source As Range) As Variant
     Dim entryArr As Variant
     Dim tempArr(1 To 4) As String
-    
+
     ReDim entryArr(1 To 4)
-    
+
     tempArr(1) = GrabName(source)
     tempArr(2) = GrabID(source)
     tempArr(3) = GrabGrade(source)
     tempArr(4) = GrabBirthdate(source)
-    
+
     For i = 1 To 4 Step 1
         entryArr(i) = tempArr(i)
     Next i
-    
+
     createEntry = entryArr
 End Function
 

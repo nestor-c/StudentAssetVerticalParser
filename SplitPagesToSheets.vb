@@ -28,7 +28,7 @@ Function BottomRightCell(pageBreak As HPageBreak) As Range
     Dim LastColumn As Integer
     Dim LastRow As Range
     LastColumn = ActiveSheet.UsedRange.Columns.Count
-    Set LastRow = pageBreak.Location.Offset(rowOffset:=-1)
+    Set LastRow = pageBreak.Location.Offset(rowoffset:=-1)
     Set BottomRightCell = Cells(LastRow.Row, LastColumn)
 End Function
 
