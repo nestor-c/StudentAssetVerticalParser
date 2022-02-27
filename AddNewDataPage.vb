@@ -5,8 +5,9 @@ Sub AddDataPage()
     sheetName = "VerticalStudentData"
     Set header = Range("A1:E1")
     header = Array("Name", "ID", "Grade", "Issue Date", "Asset Description")
-      CreateNewSheet sheetName
-     header.Copy Destination:=Range("A1")
+    CreateNewSheet sheetName
+    header.copy
+    Range("A1").PasteSpecial Paste:=xlPasteValues
      
 End Sub
 
