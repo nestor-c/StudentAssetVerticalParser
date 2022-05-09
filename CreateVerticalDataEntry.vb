@@ -13,14 +13,9 @@ Sub addStudentData()
     assets = GrabAssets(workingData)
     assetSize = returnVariantSize(assets)
 
-    For counter = 1 To assetSize
-        nextRow = newRow(newEntry, Worksheets("VerticalStudentData"))
-        nextRow = newEntry
-        Cells(nextRow.Row, nextRow.Columns.Count + 1) = assets(counter)
-    Next
+
 End Sub
-'
-'
+
 
 
 Function selectStudentData() As Range
@@ -31,6 +26,38 @@ Function selectStudentData() As Range
     Set UsedRange = UsedRange.Resize(rowSize:=UsedRange.Rows.Count - 2) _
                     .Offset(rowoffset:=2)
     Set selectStudentData = UsedRange
+End Function
+
+Private Function createEntry(source As Range) As Variant
+    Dim subEntry As Variant
+    Dim assets As Variant
+    Dim barcodes As Variant
+    Dim issueDates As Variant
+    subEntry = createSubEntry(source)
+    assets = GrabAssets(source)
+    barcodes = GrabBarcodes(source)
+    issueDates = GrabIssueDates(source)
+
+    For i = 0 To returnVariantSize(issueDates) 
+    Next i
+End Function
+
+Private Function createSubEntry(source As Range) As Variant
+    Dim entryArr As Variant
+    Dim tempArr(1 To 4) As String
+
+    ReDim entryArr(1 To 4)
+
+    tempArr(1) = GrabName(source)
+    tempArr(2) = GrabID(source)
+    tempArr(3) = GrabGrade(source)
+    tempArr(4) = GrabBirthdate(source)
+
+    For i = 1 To 4 Step 1
+        entryArr(i) = tempArr(i)
+    Next i
+
+    createEntry = entryArr
 End Function
 
 Function newRow(entry As Variant, entrySheet As Worksheet) As Range
@@ -49,24 +76,6 @@ Function returnVariantSize(source As Variant) As Integer
     returnVariantSize = i
 End Function
 
-Private Function createEntry(source As Range) As Variant
-    Dim entryArr As Variant
-    Dim tempArr(1 To 4) As String
-
-    ReDim entryArr(1 To 4)
-
-    tempArr(1) = GrabName(source)
-    tempArr(2) = GrabID(source)
-    tempArr(3) = GrabGrade(source)
-    tempArr(4) = GrabBirthdate(source)
-
-    For i = 1 To 4 Step 1
-        entryArr(i) = tempArr(i)
-    Next i
-
-    createEntry = entryArr
-End Function
-
 Private Function GrabName(source As Range) As String
     GrabName = source.Cells(1, 1).Value
 End Function
@@ -83,7 +92,7 @@ Private Function GrabBirthdate(source As Range) As String
     GrabBirthdate = source.Cells(1, 14).Value
 End Function
 
-Private Function GrabIssueDate(source As Range) As Variant
+Private Function GrabIssueDates(source As Range) As Variant
     '---The array to be returned
     Dim dateArr As Variant
     '---
